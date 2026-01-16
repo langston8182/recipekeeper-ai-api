@@ -49,6 +49,19 @@ Resources:
                 - appconfig:StartConfigurationSession
                 - appconfig:GetLatestConfiguration
               Resource: "*"
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource:
+                - "arn:aws:bedrock:*::foundation-model/amazon.nova-*"
+                - "arn:aws:bedrock:*::foundation-model/anthropic.claude-*"
+                - "arn:aws:bedrock:*:*:inference-profile/*"
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:recipekeeper-api-preprod"
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:recipekeeper-api-prod"
 
 Outputs:
   FunctionArn:

@@ -103,7 +103,7 @@ function validateRecipe(recipe) {
   };
 }
 
-module.exports = {
+export {
   recipeSchema,
   validateRecipe
 };

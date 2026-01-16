@@ -2,8 +2,8 @@
  * Point d'entrée de la fonction Lambda
  * Gère les requêtes pour l'extraction de recettes via AWS Bedrock
  */
-const recipeController = require('./controllers/recipe.controller');
-const { successResponse, errorResponse } = require('./utils/response.util');
+import recipeController from './controllers/recipe.controller.mjs';
+import { successResponse, errorResponse } from './utils/response.util.mjs';
 
 /**
  * Handler principal pour l'extraction de recettes
@@ -17,7 +17,7 @@ const { successResponse, errorResponse } = require('./utils/response.util');
  *   "recipeText": "Recette de pâtes carbonara pour 2 personnes..."
  * }
  */
-exports.extractRecipe = async (event, context) => {
+export const handler = async (event, context) => {
   console.log('Lambda invoked for recipe extraction');
   console.log('Event:', JSON.stringify(event, null, 2));
 
@@ -78,7 +78,7 @@ exports.extractRecipe = async (event, context) => {
  * @param {Object} context - Le contexte d'exécution Lambda
  * @returns {Promise<Object>} - La réponse HTTP formatée avec le statut du service
  */
-exports.healthCheck = async (event, context) => {
+export const healthCheck = async (event, context) => {
   console.log('Health check invoked');
 
   try {
@@ -102,7 +102,7 @@ exports.healthCheck = async (event, context) => {
  * @param {Object} context - Le contexte d'exécution Lambda
  * @returns {Object} - La réponse HTTP avec les en-têtes CORS
  */
-exports.options = async (event, context) => {
+export const options = async (event, context) => {
   return {
     statusCode: 200,
     headers: {

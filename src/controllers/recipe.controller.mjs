@@ -2,9 +2,9 @@
  * Controller pour gérer l'extraction de recettes
  */
 import {getConfigValue} from "../utils/config.appconfig.mjs";
-const bedrockService = require('../services/bedrock.service');
-const lambdaService = require('../services/lambda.service');
-const { validateRecipe } = require('../models/recipe.model');
+import * as bedrockService from '../services/bedrock.service.mjs';
+import * as lambdaService from '../services/lambda.service.mjs';
+import { validateRecipe } from '../models/recipe.model.mjs';
 
 /**
  * Extrait une recette à partir d'un texte brut
@@ -12,7 +12,7 @@ const { validateRecipe } = require('../models/recipe.model');
  * @returns {Promise<Object>} - La recette extraite et validée
  */
 async function extractRecipeFromText(recipeText) {
-  const modelId = getConfigValue('bedrock', 'MODEL_ID');
+  const modelId = await getConfigValue('bedrock', 'MODEL_ID');
   // Validation de l'entrée
   if (!recipeText || typeof recipeText !== 'string' || recipeText.trim().length === 0) {
     throw new Error('Recipe text is required and cannot be empty');
@@ -104,7 +104,7 @@ async function healthCheck() {
   }
 }
 
-module.exports = {
+export default {
   extractRecipeFromText,
   healthCheck
 };

@@ -6,16 +6,16 @@ Lambda AWS pour extraire des recettes structurées à partir de texte brut en ut
 
 ```
 recipekeeper-ai-api/
-├── handlers.js              # Point d'entrée de la Lambda
+├── handler.mjs              # Point d'entrée de la Lambda
 ├── controllers/
-│   └── recipe.controller.js # Orchestration de la logique métier
+│   └── recipe.controller.mjs # Orchestration de la logique métier
 ├── services/
-│   ├── bedrock.service.js   # Service d'appel à AWS Bedrock
-│   └── lambda.service.js    # Service d'invocation de la Lambda RecipeKeeper API
+│   ├── bedrock.service.mjs   # Service d'appel à AWS Bedrock
+│   └── lambda.service.mjs    # Service d'invocation de la Lambda RecipeKeeper API
 ├── models/
-│   └── recipe.model.js      # Schéma et validation des recettes
+│   └── recipe.model.mjs      # Schéma et validation des recettes
 ├── utils/
-│   └── response.util.js     # Utilitaires de formatage des réponses
+│   └── response.util.mjs     # Utilitaires de formatage des réponses
 └── package.json
 ```
 
@@ -186,7 +186,7 @@ Resources:
   RecipeExtractorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handlers.extractRecipe
+      Handler: handler.handler
       Runtime: nodejs18.x
       Timeout: 30
       MemorySize: 512
@@ -217,7 +217,7 @@ resource "aws_lambda_function" "recipe_extractor" {
   filename      = "lambda.zip"
   function_name = "recipe-extractor"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "handlers.extractRecipe"
+  handler       = "handler.handler"
   runtime       = "nodejs18.x"
   timeout       = 30
   memory_size   = 512

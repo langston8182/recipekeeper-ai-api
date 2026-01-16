@@ -2,7 +2,7 @@
  * Service pour interagir avec AWS Bedrock
  */
 import {getConfigValue} from "../utils/config.appconfig.mjs";
-const { BedrockRuntimeClient, InvokeModelCommand } = require('@aws-sdk/client-bedrock-runtime');
+import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
 
 // Configuration du client Bedrock
 const bedrockClient = new BedrockRuntimeClient({
@@ -22,24 +22,48 @@ steps: order commence à 1`;
  * @returns {Promise<Object>} - La recette structurée au format JSON
  */
 async function extractRecipe(recipeText) {
-  const modelId = getConfigValue('bedrock', 'MODEL_ID');
+  let modelId = await getConfigValue('bedrock', 'MODEL_ID');
+  
+  // Conversion du model ID en inference profile pour Nova
+  if (modelId.includes('amazon.nova')) {
+    // Extraire le nom du modèle (ex: "amazon.nova-2-lite-v1:0" -> "nova-lite-v1:0")
+    const modelName = modelId.replace('amazon.', '').replace('nova-2-', 'nova-');
+    // Utiliser le préfixe régional basé sur la région AWS
+    const region = process.env.AWS_REGION || 'us-east-1';
+    const regionPrefix = region.startsWith('us-') ? 'us' : 
+                        region.startsWith('eu-') ? 'eu' : 
+                        region.startsWith('ap-') ? 'ap' : 'us';
+    modelId = `${regionPrefix}.amazon.${modelName}`;
+    console.log(`Using inference profile: ${modelId}`);
+  }
+  
   if (!recipeText || typeof recipeText !== 'string') {
     throw new Error('Recipe text is required and must be a string');
   }
 
   try {
-    // Préparation de la requête pour Claude
+    // Préparation de la requête (format universel compatible Claude et Nova)
     const payload = {
-      anthropic_version: 'bedrock-2023-05-31',
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT,
+      schemaVersion: 'messages-v1',
+      system: [
+        {
+          text: SYSTEM_PROMPT
+        }
+      ],
       messages: [
         {
           role: 'user',
-          content: recipeText
+          content: [
+            {
+              text: recipeText
+            }
+          ]
         }
       ],
-      temperature: 0.2 // Température basse pour plus de cohérence
+      inferenceConfig: {
+        max_new_tokens: 4096,
+        temperature: 0.2
+      }
     };
 
     // Création de la commande pour invoquer le modèle
@@ -58,13 +82,23 @@ async function extractRecipe(recipeText) {
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
     console.log('Bedrock response received');
 
-    // Extraction du contenu de la réponse
-    if (!responseBody.content || !Array.isArray(responseBody.content) || responseBody.content.length === 0) {
-      throw new Error('Invalid response format from Bedrock');
+    // Extraction du contenu de la réponse (format universel)
+    let textContent;
+    
+    // Format Nova/Messages API
+    if (responseBody.output && responseBody.output.message) {
+      const message = responseBody.output.message;
+      if (message.content && Array.isArray(message.content) && message.content.length > 0) {
+        textContent = message.content.find(item => item.text);
+      }
+    }
+    // Format Claude/Anthropic
+    else if (responseBody.content && Array.isArray(responseBody.content)) {
+      textContent = responseBody.content.find(item => item.type === 'text');
     }
 
-    const textContent = responseBody.content.find(item => item.type === 'text');
     if (!textContent || !textContent.text) {
+      console.error('Unexpected response format:', JSON.stringify(responseBody, null, 2));
       throw new Error('No text content found in Bedrock response');
     }
 
@@ -131,7 +165,7 @@ async function checkBedrockAvailability() {
   }
 }
 
-module.exports = {
+export {
   extractRecipe,
   checkBedrockAvailability,
   SYSTEM_PROMPT

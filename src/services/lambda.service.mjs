@@ -1,7 +1,7 @@
 /**
  * Service pour invoquer d'autres Lambda
  */
-const { LambdaClient, InvokeCommand } = require('@aws-sdk/client-lambda');
+import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 
 // Configuration du client Lambda
 const lambdaClient = new LambdaClient({
@@ -113,7 +113,7 @@ async function checkAPIAvailability() {
   }
 }
 
-module.exports = {
+export {
   sendRecipeToAPI,
   checkAPIAvailability
 };

@@ -48,7 +48,7 @@ function errorResponse(message, statusCode = 400, details = []) {
   };
 }
 
-module.exports = {
+export {
   successResponse,
   errorResponse
 };
