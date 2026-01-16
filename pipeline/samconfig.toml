@@ -2,7 +2,7 @@ version = 0.1
 
 [default]
 region = "eu-west-3"
-capabilities = "CAPABILITY_IAM"
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
 
 [preprod.deploy.parameters]
 stack_name = "recipekeeper-preprod"

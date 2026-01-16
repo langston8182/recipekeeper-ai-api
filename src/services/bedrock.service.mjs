@@ -10,10 +10,10 @@ const bedrockClient = new BedrockRuntimeClient({
 });
 
 // Prompt system pour l'extraction de recettes
-const SYSTEM_PROMPT = `Tu es un extracteur de recettes. Retourne UNIQUEMENT un JSON valide, sans texte autour. Schéma: { "title": string, "servings": number, "ingredients": [{"name": string, "quantity": number, "unit": string}], "steps": [{"order": number, "text": string}], "tags": [string] } Contraintes:
+const SYSTEM_PROMPT = `Tu es un extracteur de recettes. Retourne UNIQUEMENT un JSON valide, sans texte autour. Schéma: { "title": string, "servings": number, "ingredients": [{"name": string, "quantity": number, "unit": string (optionnel)}], "steps": [{"order": number, "text": string}], "tags": [string] } Contraintes:
 
 servings: si absent -> 4
-ingredients: quantity numérique (si inconnu -> 1), unit en minuscule
+ingredients: quantity numérique (si inconnu -> 1), unit en minuscule (si présent, sinon null ou vide)
 steps: order commence à 1`;
 
 /**
@@ -81,6 +81,7 @@ async function extractRecipe(recipeText) {
     // Décodage de la réponse
     const responseBody = JSON.parse(new TextDecoder().decode(response.body));
     console.log('Bedrock response received');
+    console.log('Full Bedrock response:', JSON.stringify(responseBody, null, 2));
 
     // Extraction du contenu de la réponse (format universel)
     let textContent;
@@ -102,8 +103,18 @@ async function extractRecipe(recipeText) {
       throw new Error('No text content found in Bedrock response');
     }
 
+    // Nettoyage du texte (suppression des backticks markdown)
+    let cleanedText = textContent.text.trim();
+    
+    // Supprimer les blocs de code markdown (```json ... ``` ou ``` ... ```)
+    if (cleanedText.startsWith('```')) {
+      cleanedText = cleanedText.replace(/^```(?:json|JSON)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+    
+    console.log('Cleaned text for parsing:', cleanedText.substring(0, 200));
+
     // Parsing du JSON de la recette
-    const recipe = JSON.parse(textContent.text);
+    const recipe = JSON.parse(cleanedText);
 
     // Application des valeurs par défaut
     if (!recipe.servings) {
@@ -115,7 +126,7 @@ async function extractRecipe(recipeText) {
       recipe.ingredients = recipe.ingredients.map(ingredient => ({
         name: ingredient.name,
         quantity: ingredient.quantity || 1,
-        unit: (ingredient.unit || '').toLowerCase()
+        unit: ingredient.unit ? ingredient.unit.toLowerCase() : null
       }));
     }
 

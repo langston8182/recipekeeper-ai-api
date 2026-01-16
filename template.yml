@@ -16,6 +16,19 @@ Parameters:
     Type: String
     AllowedValues: [AllAtOnce, Canary10Percent5Minutes]
     Default: AllAtOnce
+  RecipeBucketName:
+    Type: String
+    Description: S3 bucket name for recipe PDFs
+    Default: cmarchive-recipekeeper-pdf-recipies
+  TextractSQSQueueArn:
+    Type: String
+    Description: ARN de la queue SQS existante pour les résultats Textract
+    Default: "arn:aws:sqs:eu-west-3:489767271637:recipekeeper-textract-results"
+  UseSyncTextract:
+    Type: String
+    Description: Utiliser le mode synchrone pour Textract (true pour tests, false pour prod)
+    AllowedValues: [true, false]
+    Default: true
 
 Globals:
   Function:
@@ -29,8 +42,19 @@ Globals:
         APP_NAME: !Ref AppName
         ENVIRONMENT: !Ref Env
         LOG_LEVEL: info
+        USE_SYNC_TEXTRACT: !Ref UseSyncTextract
 
 Resources:
+  # Permission pour S3 d'invoquer la Lambda
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref RecipeKeeperFunction
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref AWS::AccountId
+      SourceArn: !Sub "arn:aws:s3:::${RecipeBucketName}"
+
   RecipeKeeperFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -41,6 +65,13 @@ Resources:
       DeploymentPreference:
         Type: !Ref DeployPrefType              # AllAtOnce en preprod, Canary en prod
         Alarms: []                             # ajoute ici les noms d'alarmes CloudWatch
+      Events:
+        # Trigger SQS pour les résultats Textract
+        TextractResultEvent:
+          Type: SQS
+          Properties:
+            Queue: !Ref TextractSQSQueueArn
+            BatchSize: 1
       Policies:
         - AWSLambdaBasicExecutionRole
         - Statement:
@@ -60,11 +91,37 @@ Resources:
               Action:
                 - lambda:InvokeFunction
               Resource:
-                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:recipekeeper-api-preprod"
-                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:recipekeeper-api-prod"
+                - !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:recipekeeper-api-${Env}"
+            - Effect: Allow
+              Action:
+                - sqs:ReceiveMessage
+                - sqs:DeleteMessage
+                - sqs:GetQueueAttributes
+              Resource:
+                - !Ref TextractSQSQueueArn
+            - Effect: Allow
+              Action:
+                - textract:StartDocumentTextDetection
+                - textract:GetDocumentTextDetection
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+                - s3:GetObjectMetadata
+              Resource:
+                - !Sub "arn:aws:s3:::${RecipeBucketName}/*"
+            - Effect: Allow
+              Action:
+                - sqs:ReceiveMessage
+                - sqs:DeleteMessage
+                - sqs:GetQueueAttributes
+              Resource: !Ref TextractSQSQueueArn
 
 Outputs:
   FunctionArn:
     Value: !GetAtt RecipeKeeperFunction.Arn
   LiveAliasArn:
     Value: !Sub "${RecipeKeeperFunction.Arn}:Live"
+  TextractQueueArn:
+    Value: !Ref TextractSQSQueueArn
+    Description: SQS Queue ARN for Textract results (existing resource)

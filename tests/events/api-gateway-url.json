@@ -1,0 +1,25 @@
+{
+  "body": "{\"url\":\"https://www.marmiton.org/recettes/recette_pates-a-la-carbonara_11736.aspx\"}",
+  "resource": "/extract",
+  "path": "/extract",
+  "httpMethod": "POST",
+  "headers": {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+  },
+  "queryStringParameters": null,
+  "pathParameters": null,
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "489767271637",
+    "resourceId": "abc123",
+    "stage": "preprod",
+    "requestId": "test-request-id",
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    },
+    "resourcePath": "/extract",
+    "httpMethod": "POST"
+  },
+  "isBase64Encoded": false
+}

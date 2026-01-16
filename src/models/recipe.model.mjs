@@ -72,8 +72,8 @@ function validateRecipe(recipe) {
       if (typeof ingredient.quantity !== 'number') {
         errors.push(`Ingredient ${index}: quantity must be a number`);
       }
-      if (!ingredient.unit || typeof ingredient.unit !== 'string') {
-        errors.push(`Ingredient ${index}: unit is required and must be a string`);
+      if (ingredient.unit !== null && ingredient.unit !== undefined && typeof ingredient.unit !== 'string') {
+        errors.push(`Ingredient ${index}: unit must be a string or null`);
       }
     });
   }
