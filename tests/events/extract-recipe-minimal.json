@@ -1,0 +1,8 @@
+{
+  "httpMethod": "POST",
+  "path": "/extract-recipe",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"recipeText\":\"Salade verte simple\\n\\nIngrédients: laitue, 2 tomates, un concombre, vinaigrette\\n\\nLaver et couper les légumes, assaisonner avec la vinaigrette.\"}"
+}

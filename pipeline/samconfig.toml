@@ -1,0 +1,15 @@
+version = 0.1
+
+[default]
+region = "eu-west-3"
+capabilities = "CAPABILITY_IAM"
+
+[preprod.deploy.parameters]
+stack_name = "recipekeeper-preprod"
+parameter_overrides = "Env=preprod FunctionName=recipekeeper-ai-api-preprod AppName=recipekeeper DeployPrefType=AllAtOnce"
+no_confirm_changeset = true
+
+[prod.deploy.parameters]
+stack_name = "recipekeeper-prod"
+parameter_overrides = "Env=prod FunctionName=recipekeeper-ai-api-prod AppName=recipekeeper DeployPrefType=Canary10Percent5Minutes"
+no_confirm_changeset = true

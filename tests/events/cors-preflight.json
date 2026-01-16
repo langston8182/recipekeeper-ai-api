@@ -1,0 +1,9 @@
+{
+  "httpMethod": "OPTIONS",
+  "path": "/extract-recipe",
+  "headers": {
+    "Origin": "https://example.com",
+    "Access-Control-Request-Method": "POST",
+    "Access-Control-Request-Headers": "Content-Type"
+  }
+}

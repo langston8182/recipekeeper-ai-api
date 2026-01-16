@@ -1,0 +1,8 @@
+{
+  "httpMethod": "POST",
+  "path": "/extract-recipe",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"recipeText\":\"Recette de pâtes carbonara pour 2 personnes\\n\\nIngrédients:\\n- 200g de pâtes\\n- 100g de lardons\\n- 2 œufs\\n- 50g de parmesan râpé\\n- Sel et poivre\\n\\nPréparation:\\n1. Faire cuire les pâtes dans une grande casserole d'eau salée\\n2. Pendant ce temps, faire revenir les lardons dans une poêle\\n3. Battre les œufs avec le parmesan\\n4. Égoutter les pâtes et les mélanger avec les lardons\\n5. Retirer du feu et incorporer le mélange œufs-parmesan\\n6. Servir immédiatement avec du poivre\"}"
+}

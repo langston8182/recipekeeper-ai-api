@@ -1,0 +1,8 @@
+{
+  "httpMethod": "POST",
+  "path": "/extract-recipe",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{}"
+}

@@ -1,0 +1,26 @@
+{
+  "name": "recipekeeper-ai-api",
+  "version": "1.0.0",
+  "description": "RecipeKeeper AI API (AWS Lambda, MongoDB Atlas) - ESM mjs",
+  "main": "handlers/*.mjs",
+  "scripts": {
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest tests/unit",
+    "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest tests/integration",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-appconfigdata": "^3.970.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.700.0",
+    "@aws-sdk/client-lambda": "^3.700.0",
+    "js-yaml": "^4.1.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

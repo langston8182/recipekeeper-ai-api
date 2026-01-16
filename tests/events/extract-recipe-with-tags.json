@@ -1,0 +1,8 @@
+{
+  "httpMethod": "POST",
+  "path": "/extract-recipe",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"recipeText\":\"Crêpes pour 4 personnes\\n\\nIngrédients:\\n- 250g de farine\\n- 3 œufs\\n- 500ml de lait\\n- 2 cuillères à soupe d'huile\\n- 1 pincée de sel\\n- 1 cuillère à soupe de sucre (optionnel)\\n\\nÉtapes:\\n1. Dans un saladier, mélanger la farine, le sel et le sucre\\n2. Faire un puits au centre et ajouter les œufs\\n3. Mélanger progressivement en ajoutant le lait petit à petit\\n4. Ajouter l'huile et bien mélanger jusqu'à obtenir une pâte lisse\\n5. Laisser reposer 1 heure\\n6. Faire chauffer une poêle huilée\\n7. Verser une louche de pâte et étaler en tournant la poêle\\n8. Cuire 1-2 minutes de chaque côté\\n9. Servir chaud avec garniture au choix\\n\\nTags: facile, dessert, petit-déjeuner\"}"
+}

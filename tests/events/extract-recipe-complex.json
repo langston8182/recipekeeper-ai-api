@@ -1,0 +1,8 @@
+{
+  "httpMethod": "POST",
+  "path": "/extract-recipe",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"recipeText\":\"Tarte aux pommes maison - 6 personnes\\n\\nPour la pâte:\\n- 250g de farine\\n- 125g de beurre\\n- 1 œuf\\n- 50ml d'eau\\n- 1 pincée de sel\\n\\nPour la garniture:\\n- 5 pommes\\n- 100g de sucre\\n- 1 cuillère à soupe de cannelle\\n- 30g de beurre\\n\\nInstructions:\\n1. Préparer la pâte en mélangeant farine, beurre coupé en dés et sel\\n2. Ajouter l'œuf et l'eau, former une boule\\n3. Laisser reposer 30 minutes au frais\\n4. Éplucher et couper les pommes en tranches fines\\n5. Étaler la pâte dans un moule à tarte\\n6. Disposer les pommes en rosace\\n7. Saupoudrer de sucre et cannelle\\n8. Parsemer de noisettes de beurre\\n9. Cuire 35 minutes à 180°C\"}"
+}
